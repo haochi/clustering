@@ -7,6 +7,7 @@
     var calc_dist = opts.calculate_distance;
     var converge_test = opts.converge_test;
     Centroid.prototype.calculate_position = function(){
+      this.prev_position = this.position;
       this.position = opts.calculate_position(this.points);
       return this.position;
     }
@@ -29,10 +30,10 @@
       old_groups.push([]);
     }
 
-    // make it converge
+    // wait for it to converge
     while(!converged && iterations < max_iterations){
       points.forEach(function(point, i){
-        var min_j = 0;
+        var min_j;
         var dist = max_num;
         centroids.forEach(function(centroid, j){
           var c_dist = calc_dist(point, centroid.position);
@@ -49,13 +50,13 @@
       converged = converge_test(centroids, old_groups, groups);
 
       // cleanup for this iteration
-      iterations++;
       old_groups = groups;
       groups = groups.map(function(group, i){
         centroids[i].calculate_position();
         centroids[i].clear();
         return [];
       });
+      iterations++;
     }
 
     return old_groups;
