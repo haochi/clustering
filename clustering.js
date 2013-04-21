@@ -58,8 +58,9 @@
       });
       iterations++;
     }
-
-    return old_groups;
+    return centroids.map(function(centroid, i){
+      return { position: centroid.position, points: old_groups[i] };
+    });
   }
 
   function Centroid(){
